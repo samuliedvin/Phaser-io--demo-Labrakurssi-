@@ -11,8 +11,13 @@ var slices,
 
 var sine;
 
+var time_til_spawn;
+var last_spawn_time;
+
 var xl;
 var cx = 0;
+
+
 
 // Luodaan tämän demon peli-instanssi
 var game = new Phaser.Game(800,
@@ -28,10 +33,21 @@ var game = new Phaser.Game(800,
 
 // Ladataan musat ja taustakuva muistiin
 function preload() {
-
     game.load.audio('slowmo', ['assets/slowmo.mp3', 'assets/slowmo.ogg']);
-    game.load.image('background', 'assets/background.png');
+    game.load.image('background', 'assets/background.png'); 
     
+    // Tähti 
+    var starData = [
+        '.2.',
+        '222',
+        '.2.'
+    ];
+    
+
+    // game.create.texture('star', starData, 3, 3, 0); // luodaan taulukkodatan pohjalta tähden tekstuuri
+    game.load.imageFromTexture('star', starData, 3, 3, 0);
+    
+
 }
 
 /* Luodaan kaikki tarvittava:
@@ -102,19 +118,13 @@ function create() {
     }
     
     
-    // Tähti 
-    var starData = [
-        '.2.',
-        '222',
-        '.2.'
-    ];
-    
-    game.create.texture('star', starData, 3, 3, 0); // luodaan taulukkodatan pohjalta tähden tekstuuri
-    
     starlet = game.add.sprite(-5, -5, 'star'); 
     // nähtävästi peliin on luotava sprite että sen pohjalta voi luoda uusia silmukassa, 
     // ei nyt keksitty muutakaan niin laitetaan piiloon (-5, -5)
     
+    
+   
+
     var starAmount = 15; // Tähtien määrä 
     
     
@@ -134,14 +144,17 @@ function create() {
             stars.push(star);
         
     }
-
     
     // Luodaan siniaaltotaulu skrollerin aaltoilua varten
     sine = [];
     for (var i = 0; i < 800; i++) {
         sine[i] = 2*Math.sin(i/15);
     }
+    
 
+    // Tähdenlentojen randomi esiintyminen
+    time_til_spawn = Math.random()*3000 + 2000;  //Random time between 2 and 5 seconds.
+    last_spawn_time = game.time.time;   
 }
 
 /*
@@ -151,6 +164,8 @@ Laitetaan teksti skrollaamaan ja aaltoilemaan.
 Teksti on siis viipaloitu vaakasuoriin osiin, joiden sijainti x-akselilla riippuu sinitaulun arvosta y-akselin sijainnin perusteella.
 
 Viipaleen sijainti y-akselilla on viipaleen muuttujan z modulo 400 + 500, eli saa käytännössä arvoja [100..500]
+
+Tämän lisäksi luodaan satunnaisia tähdenlentoja 2-5 sekunnin välein
 
 */
 
@@ -164,5 +179,33 @@ function update() {
         slice.y = (slice.z % 400) + 500;
     }
     
+    
+    // Satunnaisia tähdenlentoja
+    var current_time = game.time.time;
+    if(current_time - last_spawn_time > time_til_spawn){
+        time_til_spawn = Math.random()*3000 + 2000;
+        last_spawn_time = current_time;
+        spawnShootingStar();
+    }
 }
 
+
+
+// Tähdenlentojen luonti
+function spawnShootingStar() {
+    var x = game.rnd.between(0, 800);
+    var y = game.rnd.between(0, 400);
+
+    var x2 = game.rnd.between(0, 800);
+    var y2 = game.rnd.between(0, 400);
+    
+    
+    var shootingStar = game.make.sprite(x, y, 'star');
+
+    shootingStar.alpha = 0;
+    game.add.tween(shootingStar).to( { x: x2, y: y2 }, 2000, Phaser.Easing.Linear.None, true, 0, 0, false);
+    game.add.tween(shootingStar).to( { alpha: 1 }, 1000, Phaser.Easing.Linear.None, true, 0, 0, true);
+
+    sprites.addChild(shootingStar);
+    stars.push(shootingStar);
+}
