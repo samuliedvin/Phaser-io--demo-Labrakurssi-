@@ -6,15 +6,48 @@
     <script src="app.js"></script>
     <title>Phaser Demo</title>
     <style>
-        * {background-color: black;}
-        body {padding-top: 100px}
+        * {background-color: rgb(100,150,150);}
+        body {padding-top: 50px}
         canvas {margin: auto}
+        #description{
+            width: 50%;
+            padding-top: 50px;
+            margin: auto;
+            color: white;
+            font-family: sans-serif;
+        }
         
     </style>
 </head>
 <body>
     <div id="phaser">
     
+    </div>
+    
+    <div id="description"> 
+        <h1>
+            Koodin kuvaus
+        </h1>
+        
+        <p>
+            Koodi on tehty perus Phaser-rungon päälle, ja se sisältää funktiot preload(), create(), update() sekä spawnShootingStar(). 
+        </p>
+        
+        <p>
+            Preloadissa ladataan välimuistiin tekstiä lukuunottamatta kaikki näytettävä: soitettava musiikki, taustakuva sekä tähden tekstuuri. Create-funktiossa elementit lisäillään demoon. Ehkä oleellisinta on aaltoilevan skrollerin luonti, jossa teksti viipaloidaan vaakasuuntaisiin siivuihin, jotta kyseisiä siivuja voidaan käsitellä erillisinä. Tässä demossa lasketaan sinifunktion arvoja tauluun, josta voidaan katsoa sitten siivun sijainti x-akselilla käyttämällä indeksinä sijaintia y-akselilla.
+        </p>
+        
+        <p>
+            Oudointa mitä tuli vastaan, oli se, että emme keksineet, miksi tähtien luonti peliin ei onnistunut ilman, että sellainen oli luotu etukäteen for-loopin ulkopuolella. Laitoimme tuon tähden sitten piiloon ruudun ulkopuolelle. Update-funktiossa sitten päivitellään teksti-viipaleiden sijaintia sinitaulukon perusteella, ja luodaan satunnaisia tähdenlentoja käyttämällä hyväksi Phaserin kelloa.
+        </p>
+        
+        <p>
+            Tähtien välkkymiseen ja liikkumiseen käytettiin Phaserin Tween-luokkaa jolla sai näppärästi efektejä, ja toisaalta myös tähenlennot ilmestymään ja häviämään lennon jälkeen.
+        </p>
+        
+        <h2>Phaser-koodi</h2>
+        
+        <iframe src="./app.js" style="width:100%; height:500px"></iframe>
     </div>
     
 </body>
